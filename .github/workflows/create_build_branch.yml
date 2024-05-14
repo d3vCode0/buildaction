@@ -13,6 +13,10 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
+      - name: Set pull configuration
+        run: |
+          git config --global pull.rebase false  # Merge divergent branches
+
       - name: Check if branch exists
         id: check_branch
         run: |
@@ -48,8 +52,6 @@ jobs:
           git pull origin $branch_name --allow-unrelated-histories  # Pull changes from remote branch
           git push origin $branch_name
 
-      - name: Pull changes before push
+      - name: Skip if branch exists
         if: steps.check_branch.outputs.branch_exists == 'true'
-        run: |
-          branch_name="builds"
-          git pull origin $branch_name
+        run: echo "Branch 'builds' already exists. Skipping workflow."
