@@ -33,7 +33,7 @@ class ExampleAPi : MainAPI() {
             it.toSearchResult()
         }
 
-        items.add(HomePageList("title", home))
+        items.add(HomePageList("title", home, isHorizontalImages = true))
         return HomePageResponse(items)
 
         // return HomePageResponse(
