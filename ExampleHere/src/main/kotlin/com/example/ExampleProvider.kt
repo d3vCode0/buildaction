@@ -23,6 +23,7 @@ class ExampleAPi : MainAPI() {
         page: Int,
         request: MainPageRequest
     ): HomePageResponse {
+        val items = ArrayList<HomePageList>()
         val document = if (page == 1) {
             app.get(request.data.removeSuffix("page/")).document
         } else {
@@ -32,19 +33,29 @@ class ExampleAPi : MainAPI() {
             it.toSearchResult()
         }
 
-        return HomePageResponse(
-            arrayListOf(HomePageList(request.name, home, isHorizontalImages = true)),
-            hasNext = true
-        )
+        items.add(HomePageList(title, home))
+        return HomePageResponse(items)
+
+        // return HomePageResponse(
+        //     arrayListOf(HomePageList(request.name, home, isHorizontalImages = true)),
+        //     hasNext = true
+        // )
     }
 
     private fun Element.toSearchResult(): SearchResponse? {
         val title = this.selectFirst("div.info h3")?.text()?.trim() ?: return null
         val href = fixUrlNull(this.selectFirst("a")?.attr("href")) ?: return null
         val posterUrl = fixUrlNull(this.selectFirst("a")?.attr("data-src"))
-        val ep = this.selectFirst("a.episode")?.text()?.trim() ?: return null
+        val ep = this.selectFirst("a.episode")?.text()?.trim().?replace("الحلقة ", "") ?: return null
 
-        return newAnimeSearchResponse("$title EP: $ep", href, TvType.Anime) { this.posterUrl = posterUrl }        
+        return AnimeSearchResponse(
+            name = "$title EP: $ep",
+            url = href,
+            apiName = this.name,
+            type = TvType.Anime,
+            posterUrl = posterUrl
+        )   
+        // return newAnimeSearchResponse("$title EP: $ep", href, TvType.Anime) { this.posterUrl = posterUrl }        
     }
 
 }
