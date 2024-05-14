@@ -25,7 +25,9 @@ jobs:
         
       - name: Create branch if not exists
         run: |
-          if [[ "${{ steps.check_branch.outputs.branch_exists }}" == 'false' ]]; then
+          if [[ "${{ steps.check_branch.outputs.branch_exists }}" == 'true' ]]; then
+            echo "Branch 'builds' already exists. Workflow passed."
+          else
             branch_name="builds"
             git config --global user.email "actions@github.com"
             git config --global user.name "GitHub Actions"
@@ -47,6 +49,4 @@ jobs:
             git commit -m "Initial commit for new branch"
             git pull origin $branch_name --allow-unrelated-histories  # Pull changes from remote branch
             git push origin $branch_name
-          else
-            echo "Branch 'builds' already exists. Workflow passed."
           fi
