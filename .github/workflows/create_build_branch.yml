@@ -25,7 +25,7 @@ jobs:
         
       - name: Create branch if not exists
         run: |
-          if [[ "${{ steps.check_branch.outputs.branch_exists }}" == 'true' ]]; then
+          if [ "${{ steps.check_branch.outputs.branch_exists }}" == 'true' ]; then
             echo "Branch 'builds' already exists. Workflow passed."
           else
             branch_name="builds"
