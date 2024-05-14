@@ -36,7 +36,7 @@ jobs:
           echo '  "description": "description",' >> repo.json
           echo '  "manifestVersion": 1,' >> repo.json
           echo '  "pluginLists": [' >> repo.json
-          echo '    "https://raw.githubusercontent.com/user/repo/builds/plugins.json"' >> README.md
+          echo '    "https://raw.githubusercontent.com/user/repo/builds/plugins.json"' >> repo.json
           echo '  ]' >> repo.json
           echo '}' >> repo.json
           echo '## Edit file repo.json' >> README.md
