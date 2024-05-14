@@ -22,10 +22,6 @@ jobs:
           else
             echo "::set-output name=branch_exists::false"
           fi
-
-      - name: Check if branch exists and pass if true
-        if: steps.check_branch.outputs.branch_exists == 'true'
-        run: echo "Branch exists, skipping branch creation"
         
       - name: Create branch if not exists
         if: steps.check_branch.outputs.branch_exists == 'false'
@@ -50,3 +46,8 @@ jobs:
           git add README.md repo.json
           git commit -m "Initial commit for new branch"
           git push origin $branch_name
+          
+      - name: Pass if branch exists
+        if: steps.check_branch.outputs.branch_exists == 'true'
+        run: |
+          echo "Branch 'builds' already exists. Workflow passed."
