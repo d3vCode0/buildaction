@@ -14,12 +14,14 @@ on:
 
 
 jobs:
-  create-branch:
+  build:
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@master
+        with:
+          path: "src"
 
       - name: Check if branch exists and add file repo
         id: check_branch
@@ -48,6 +50,13 @@ jobs:
             git commit -m "Initial commit for new branch"
             git push origin $branch_name
           fi
+
+      - name: Checkout builds
+        uses: actions/checkout@master
+        with:
+          ref: "builds"
+          path: "builds"
+
       - name: Clean old builds
         run: |
           if ls $GITHUB_WORKSPACE/builds/*.cs3 1> /dev/null 2>&1; then
