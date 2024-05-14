@@ -31,7 +31,16 @@ jobs:
           git config --global user.name "GitHub Actions"
           git checkout --orphan $branch_name || exit 0  # Exit successfully if branch already exists
           git rm -rf .
-          touch .gitkeep
-          git add .
+          echo 'Add file repo.json' > README.md
+          echo 'Edit: name, description, pluginLists, user/repo' > README.md
+          echo '{\
+            "name": "repository name",\
+            "description": "description here",\
+            "manifestVersion": 1,\
+            "pluginLists": [\
+              "https://raw.githubusercontent.com/user/repo/builds/plugins.json"\
+            ]\
+          }' >> README.md
+          git add README.md
           git commit -m "Initial commit for new branch"
           git push origin $branch_name
