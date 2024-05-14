@@ -3,24 +3,33 @@ name: Create Branch If Not Exists
 on:
   push:
     branches:
-      - main  # Change this to the branch you want to trigger the workflow on
+      - main
 
 jobs:
-  create_branch:
+  create-branch:
     runs-on: ubuntu-latest
+
     steps:
-      - name: Check if branch exists
-        run: |
-          if ! git show-ref --quiet refs/heads/$BRANCH_NAME; then
-              git checkout -b $BRANCH_NAME
-              git push origin $BRANCH_NAME
-          fi
-        env:
-          BRANCH_NAME: builds
-        # Make sure to replace `your_new_branch_name` with the name of the branch you want to create
-      - name: Set up Git
+      - name: Checkout code
         uses: actions/checkout@v2
-      - name: Create and push branch
+
+      - name: Check if branch exists
+        id: check_branch
         run: |
-          git checkout -b ${{ env.BRANCH_NAME }}
-          git push origin ${{ env.BRANCH_NAME }}
+          branch_name="builds"
+          if git show-ref --verify --quiet "refs/heads/$branch_name"; then
+            echo "::set-output name=branch_exists::true"
+          else
+            echo "::set-output name=branch_exists::false"
+          fi
+
+      - name: Create branch if not exists
+        if: steps.check_branch.outputs.branch_exists == 'false'
+        run: |
+          branch_name="builds"
+          git checkout --orphan $branch_name
+          git rm -rf .
+          touch .gitkeep
+          git add .
+          git commit -m "Initial commit for new branch"
+          git push origin $branch_name
