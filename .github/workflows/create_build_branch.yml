@@ -45,6 +45,7 @@ jobs:
             echo '- user/repo' >> README.md
             git add README.md repo.json
             git commit -m "Initial commit for new branch"
+            git pull origin $branch_name --allow-unrelated-histories  # Pull changes from remote branch
             git push origin $branch_name
           else
             echo "Branch 'builds' already exists. Workflow passed."
