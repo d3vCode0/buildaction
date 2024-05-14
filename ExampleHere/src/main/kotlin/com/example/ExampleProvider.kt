@@ -38,7 +38,7 @@ class ExampleAPi : MainAPI() {
         )
     }
 
-    private fun Element.toSearchResult(): SearchResponse {
+    private fun Element.toSearchResult(): SearchResponse? {
         val title = this.selectFirst("div.info h3")?.text()?.trim() ?: return null
         val href = fixUrlNull(this.selectFirst("a")?.attr("href")) ?: return null
         val posterUrl = fixUrlNull(this.selectFirst("a")?.attr("data-src"))
