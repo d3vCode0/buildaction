@@ -1,9 +1,13 @@
-name: Create Branch If Not Exists
+name: Build
 
 on:
   push:
     branches:
       - main
+      - master
+    paths-ignore:
+      - '*.md'
+
 
 jobs:
   create-branch:
@@ -13,25 +17,12 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Set pull configuration
-        run: |
-          git config --global pull.rebase false  # Merge divergent branches
-
-      - name: Check if branch exists
+      - name: Check if branch exists and add file repo
         id: check_branch
         run: |
           branch_name="builds"
           if git show-ref --verify --quiet "refs/heads/$branch_name"; then
-            echo "::set-output name=branch_exists::true"
-          else
-            echo "::set-output name=branch_exists::false"
-          fi
-
-      - name: Create branch if not exists
-        run: |
-          branch_name="builds"
-          if ${{steps.check_branch.outputs.branch_exists == 'true'}}; then
-            echo ""
+            echo "Branch exists, skipping branch creation"
           else
             git config --global user.email "actions@github.com"
             git config --global user.name "GitHub Actions"
@@ -51,6 +42,6 @@ jobs:
             echo '- user/repo' >> README.md
             git add README.md repo.json
             git commit -m "Initial commit for new branch"
-            git pull origin $branch_name --allow-unrelated-histories  # Pull changes from remote branch
             git push origin $branch_name
           fi
+          
