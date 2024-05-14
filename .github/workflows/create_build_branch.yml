@@ -31,23 +31,18 @@ jobs:
           git config --global user.name "GitHub Actions"
           git checkout --orphan $branch_name || exit 0  # Exit successfully if branch already exists
           git rm -rf .
-          echo '## Add file repo.json' > README.md
-          echo '```json' >> README.md
-          echo '{' >> README.md
-          echo '  "name": "cloudstream repository",' >> README.md
-          echo '  "description": "description",' >> README.md
-          echo '  "manifestVersion": 1,' >> README.md
-          echo '  "pluginLists": [' >> README.md
+          echo '{' >> repo.json
+          echo '  "name": "cloudstream repository",' >> repo.json
+          echo '  "description": "description",' >> repo.json
+          echo '  "manifestVersion": 1,' >> repo.json
+          echo '  "pluginLists": [' >> repo.json
           echo '    "https://raw.githubusercontent.com/user/repo/builds/plugins.json"' >> README.md
-          echo '  ]' >> README.md
-          echo '}' >> README.md
-          echo '```' >> README.md
-          echo '' >> README.md
+          echo '  ]' >> repo.json
+          echo '}' >> repo.json
           echo '## Edit file repo.json' >> README.md
           echo '- name' >> README.md
           echo '- description' >> README.md
-          echo '- repo/builds' >> README.md
-          echo '' >> README.md
-          git add README.md
+          echo '- user/repo' >> README.md
+          git add README.md repo.json
           git commit -m "Initial commit for new branch"
           git push origin $branch_name
