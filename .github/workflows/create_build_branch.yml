@@ -23,6 +23,10 @@ jobs:
             echo "::set-output name=branch_exists::false"
           fi
 
+      - name: Check if branch exists and pass if true
+        if: steps.check_branch.outputs.branch_exists == 'true'
+        run: echo "Branch exists, skipping branch creation"
+        
       - name: Create branch if not exists
         if: steps.check_branch.outputs.branch_exists == 'false'
         run: |
