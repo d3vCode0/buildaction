@@ -46,7 +46,7 @@ class ExampleAPi : MainAPI() {
         val title = this.selectFirst("div.info h3")?.text()?.trim() ?: return null
         val href = fixUrlNull(this.selectFirst("a")?.attr("href")) ?: return null
         val posterUrl = fixUrlNull(this.selectFirst("a")?.attr("data-src"))
-        val ep = this.selectFirst("a.episode").text().trim()
+        val ep = this.selectFirst("a.episode")?.text()?.trim() ?: return null
 
         return AnimeSearchResponse(
             name = "$title $ep",
