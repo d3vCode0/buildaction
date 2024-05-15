@@ -52,7 +52,10 @@ class ExampleAPi : MainAPI() {
             TvType.Anime,
         ) {
             this.posterUrl = posterUrl
-            addDubStatus(extra, eps)
+            addDubStatus(
+                status= extra.toString(),
+                episodes = eps.toIntOrNull()
+            )
         }
     }
 
