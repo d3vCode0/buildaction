@@ -28,7 +28,7 @@ class ExampleAPi : MainAPI() {
                 val list =
                     it.select("div.row div").map {
                             anime -> anime.toSearchResponse()
-                    }.distinct()
+                    }
                 HomePageList(title, list, isHorizontalImages = true)
             }
         return newHomePageResponse(homeList, hasNext = false)
