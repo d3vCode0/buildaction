@@ -16,13 +16,18 @@ class ExampleAPi : MainAPI() {
     )
 
     override val mainPage = mainPageOf(
-        "${mainUrl}/episodes/page/" to "Episodes",
+        "${mainUrl}/episodes/" to "Episodes",
     )
 
 
     override suspend fun getMainPage(page: Int, request: MainPageRequest): HomePageResponse {
-        val document = app.get("$mainUrl/").document
-        val home = document.select("div.media-section div.row").mapNotNull {
+        val document = if (page == 1) {
+            app.get(request.data).document
+        } else {
+            app.get(request.data + "page/$page").document
+        }
+
+        val home = document.select("div.container div.row div").mapNotNull {
             it.toSearchResponse()
         }
         return newHomePageResponse(
@@ -38,6 +43,8 @@ class ExampleAPi : MainAPI() {
         val title = this.selectFirst("div.info h3")?.text()?.trim()
         val href = fixUrlNull(this.selectFirst("a")?.attr("href"))
         val posterUrl = fixUrlNull(this.selectFirst("a")?.attr("data-src"))
+        val eps = this.selectFirst("a.episode")?.text()?.trim()
+        val extra = this.selectFirst("div.info h4")?.text()?.trim()
 
         return newAnimeSearchResponse(
             title.toString(),
@@ -45,6 +52,7 @@ class ExampleAPi : MainAPI() {
             TvType.Anime,
         ) {
             this.posterUrl = posterUrl
+            addDubStatus(extra, eps)
         }
     }
 
