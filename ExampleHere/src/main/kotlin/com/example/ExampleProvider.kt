@@ -19,23 +19,22 @@ class ExampleAPi : MainAPI() {
         "${mainUrl}/episodes/page/" to "Episodes",
     )
 
-    override suspend fun getMainPage(
-        page: Int,
-        request: MainPageRequest
-    ): HomePageResponse {
-        val doc = app.get(request.data + page).document
-        val homeList = doc.select("div.div.page-content")
+
+    override suspend fun getMainPage(page: Int, request: MainPageRequest): HomePageResponse {
+        val doc = app.get("$mainUrl/").document
+        val homeList = doc.select("div.page-content")
             .mapNotNull {
                 val title = "Episodes"
                 val list =
                     it.select("div.row div").map {
-                        anime -> anime.toSearchResponse()
+                            anime -> anime.toSearchResponse()
                     }.distinct()
                 HomePageList(title, list, isHorizontalImages = true)
             }
+        return newHomePageResponse(homeList, hasNext = false)
     }
 
-    private fun Element.toSearchRespone(): SearchRespone {
+    private fun Element.toSearchResponse(): SearchRespone {
         val title = select("div.info h3").text()
         val href = select("a").attr("href")
         val posterUrl = select("a").attr("data-src")
