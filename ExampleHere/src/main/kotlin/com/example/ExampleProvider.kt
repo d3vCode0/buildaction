@@ -21,23 +21,24 @@ class ExampleAPi : MainAPI() {
 
 
     override suspend fun getMainPage(page: Int, request: MainPageRequest): HomePageResponse {
-        val doc = app.get("$mainUrl/").document
-        val homeList = doc.select("div.page-content")
-            .mapNotNull {
-                val title = "Episodes"
-                val list =
-                    it.select("div.row div").map {
-                            anime -> anime.toSearchResponse()
-                    }
-                HomePageList(title, list, isHorizontalImages = true)
-            }
-        return newHomePageResponse(homeList, hasNext = false)
+        val document = app.get("$mainUrl/").document
+        val home = document.select("div.media-section div.row").mapNotNull {
+            it.toSearchResponse()
+        }
+        return newHomePageResponse(
+            HomePageList(
+                name = request.name,
+                home,
+                isHorizontalImages = true
+            )
+        )
     }
 
     private fun Element.toSearchResponse(): SearchResponse {
-        val title = select("div.info h3").text()
-        val href = select("a").attr("href")
-        val posterUrl = select("a").attr("data-src")
+        val title = this.selectFirst("div.info h3").text().trim()
+        val href = fixUrlNull(this.selectFirst("a").attr("href"))
+        val posterUrl = fixUrlNull(this.selectFirst("a").attr("data-src"))
+
         return newAnimeSearchResponse(
             title,
             href,
