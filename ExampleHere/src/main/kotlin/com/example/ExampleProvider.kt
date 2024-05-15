@@ -53,8 +53,8 @@ class ExampleAPi : MainAPI() {
         ) {
             this.posterUrl = posterUrl
             addDubStatus(
-                status= extra.toString(),
-                episodes = eps.toIntOrNull()
+                status= extra?.toString(),
+                episodes = eps?.toIntOrNull()
             )
         }
     }
