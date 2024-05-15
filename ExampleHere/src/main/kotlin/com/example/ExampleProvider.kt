@@ -23,39 +23,29 @@ class ExampleAPi : MainAPI() {
         page: Int,
         request: MainPageRequest
     ): HomePageResponse {
-        val items = ArrayList<HomePageList>()
-        val document = if (page == 1) {
-            app.get(request.data.removeSuffix("page/")).document
-        } else {
-            app.get(request.data + page).document
+        val document = app.get(request.data + page).document
+        val homeList = document.select("div.page-content").mapNotNull {
+            val title = "Episodes"
+            val list = it.select("div.row div").map {
+                anime -> anime.toSearchRespone()
+            }.distinct()
+            HomePageList(title, list, isHorizontalImages = true)
         }
-        val home = document.select("div.page-content div.row div").mapNotNull {
-            it.toSearchResult()
-        }
-
-        items.add(HomePageList("title", home))
-        return HomePageResponse(items)
-
-        // return HomePageResponse(
-        //     arrayListOf(HomePageList(request.name, home, isHorizontalImages = true)),
-        //     hasNext = true
-        // )
+        return newHomePageResponse(homeList, hasNext = true)
     }
 
-    private fun Element.toSearchResult(): SearchResponse? {
-        val title = this.selectFirst("div.info h3")?.text()?.trim() ?: return null
-        val href = fixUrlNull(this.selectFirst("a")?.attr("href")) ?: return null
-        val posterUrl = fixUrlNull(this.selectFirst("a")?.attr("data-src"))
-        val ep = this.selectFirst("a.episode")?.text()?.trim() ?: return null
-
-        return AnimeSearchResponse(
-            name = "$title $ep",
-            url = href,
-            apiName = this@ExampleAPi.name,
-            type = TvType.Anime,
-            posterUrl = posterUrl
-        )   
-        // return newAnimeSearchResponse("$title EP: $ep", href, TvType.Anime) { this.posterUrl = posterUrl }        
+    private fun Element.toSearchRespone(): SearchRespone {
+        val title = select("div.info h3").text()
+        val href = select("a").attr("href")
+        val posterUrl = select("a").attr("data-src")
+        return newAnimeSearchResponse(
+            title,
+            href,
+            TvType.Anime,
+        ) {
+            this.posterUrl = posterUrl
+        }
     }
+
 
 }
