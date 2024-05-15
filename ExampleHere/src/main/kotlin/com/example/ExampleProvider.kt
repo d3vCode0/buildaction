@@ -34,7 +34,7 @@ class ExampleAPi : MainAPI() {
         return newHomePageResponse(homeList, hasNext = false)
     }
 
-    private fun Element.toSearchResponse(): SearchRespone {
+    private fun Element.toSearchResponse(): SearchResponse {
         val title = select("div.info h3").text()
         val href = select("a").attr("href")
         val posterUrl = select("a").attr("data-src")
