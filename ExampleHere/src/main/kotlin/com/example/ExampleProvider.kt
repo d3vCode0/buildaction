@@ -23,15 +23,23 @@ class ExampleAPi : MainAPI() {
         page: Int,
         request: MainPageRequest
     ): HomePageResponse {
-        val document = app.get(request.data + page).document
-        val homeList = document.select("div.page-content").mapNotNull {
-            val title = "Episodes"
-            val list = it.select("div.row div").map {
-                anime -> anime.toSearchRespone()
-            }.distinct()
-            HomePageList(title, list, isHorizontalImages = true)
+        val items = ArrayList<HomePageList>()
+        val document = if (page == 1) {
+            app.get(request.data.removeSuffix("page/")).document
+        } else {
+            app.get(request.data + page).document
         }
-        return newHomePageResponse(homeList, hasNext = true)
+        val home = document.select("div.page-content div.row div").mapNotNull {
+            it.toSearchResult()
+        }
+
+        items.add(HomePageList("title", home))
+        return HomePageResponse(items)
+
+        // return HomePageResponse(
+        //     arrayListOf(HomePageList(request.name, home, isHorizontalImages = true)),
+        //     hasNext = true
+        // )
     }
 
     private fun Element.toSearchRespone(): SearchRespone {
