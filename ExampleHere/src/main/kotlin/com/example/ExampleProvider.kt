@@ -35,9 +35,9 @@ class ExampleAPi : MainAPI() {
     }
 
     private fun Element.toSearchResponse(): SearchResponse {
-        val title = this.selectFirst("div.info h3").text().trim()
-        val href = fixUrlNull(this.selectFirst("a").attr("href"))
-        val posterUrl = fixUrlNull(this.selectFirst("a").attr("data-src"))
+        val title = this.selectFirst("div.info h3")?.text()?.trim()
+        val href = fixUrlNull(this.selectFirst("a")?.attr("href"))
+        val posterUrl = fixUrlNull(this.selectFirst("a")?.attr("data-src"))
 
         return newAnimeSearchResponse(
             title,
