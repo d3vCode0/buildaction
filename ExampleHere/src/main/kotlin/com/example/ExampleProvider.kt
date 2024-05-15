@@ -43,8 +43,8 @@ class ExampleAPi : MainAPI() {
         val title = this.selectFirst("div.info h3")?.text()?.trim()
         val href = fixUrlNull(this.selectFirst("a")?.attr("href"))
         val posterUrl = fixUrlNull(this.selectFirst("a")?.attr("data-src"))
-        val eps = this.selectFirst("a.episode")?.text()?.trim()
-        val extra = this.selectFirst("div.info h4")?.text()?.trim()
+        val eps = this.selectFirst("a.episode")?.text()?.trim().replace("الحلقة ", "")?.toString()
+        val extra = this.selectFirst("div.info h4")?.text()?.trim().replace("الموسم ", "")?.toIntOrNull()
 
         return newAnimeSearchResponse(
             title.toString(),
@@ -52,10 +52,7 @@ class ExampleAPi : MainAPI() {
             TvType.Anime,
         ) {
             this.posterUrl = posterUrl
-            addDubStatus(
-                status= extra?.toString(),
-                episodes = eps?.toIntOrNull()
-            )
+            addDubStatus( extra, eps )
         }
     }
 
