@@ -40,8 +40,8 @@ class ExampleAPi : MainAPI() {
         val posterUrl = fixUrlNull(this.selectFirst("a")?.attr("data-src"))
 
         return newAnimeSearchResponse(
-            title,
-            href,
+            title.toString(),
+            href.toString(),
             TvType.Anime,
         ) {
             this.posterUrl = posterUrl
